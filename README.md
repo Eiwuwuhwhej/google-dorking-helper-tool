@@ -3,6 +3,7 @@
 # 🔍 Google Dorking Query Generator & Reverse Dork Parser
 ### Professional OSINT Reconnaissance, Bug Bounty Asset Discovery & Advanced Search Operator Builder
 
+[![Live Demo](https://img.shields.io/badge/Demo-Live%20on%20Render-10b981.svg)](https://google-dorking-helper-tool.onrender.com)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com)
@@ -16,7 +17,7 @@
   <em>100% Client-Side • Zero Tracking • Zero API Keys • Instant Render Deployment</em>
 </p>
 
-[Live Demo](#how-to-run) • [Features](#key-features) • [Deploy to Render](#deploy-to-render-rendercom) • [Dork Cheatsheet](#google-dorking-operators-quick-reference) • [Use Cases](#who-is-this-for)
+[🌐 Open Live App](https://google-dorking-helper-tool.onrender.com) • [Features](#key-features) • [Deploy to Render](#deploy-to-render-rendercom) • [Dork Cheatsheet](#google-dorking-operators-quick-reference) • [Use Cases](#who-is-this-for)
 
 ---
 
@@ -184,6 +185,17 @@ This repository includes native **[render.yaml](render.yaml)** Blueprint and **[
 2. Select your repository.
 3. Render automatically detects Node.js (`npm run build` & `npm start`).
 4. The built-in zero-dependency `server.js` binds to Render's dynamic `PORT` on `0.0.0.0`.
+
+### ⏱️ 24/7 Anti-Sleep Configuration (UptimeRobot)
+Render's free-tier Web Services spin down after **15 minutes** of inactivity, causing a ~30–50 second cold start on the next request. A free **UptimeRobot** monitor keeps your instance permanently warm:
+
+1. In your [UptimeRobot Dashboard](https://uptimerobot.com), click **+ Add New Monitor**:
+   * **Monitor Type**: `HTTP(s)`
+   * **Friendly Name**: `Google Dork Generator (Render)`
+   * **URL (or IP)**: `https://google-dorking-helper-tool.onrender.com/health` *(or `https://google-dorking-helper-tool.onrender.com/`)*
+   * **Monitoring Interval**: `Every 5 minutes` *(Render spins down after 15m; 5m guarantees it never sleeps)*
+   * **HTTP Method**: `HEAD` or `GET` *(the app includes a dedicated lightweight `/health` endpoint returning instant `200 OK`)*
+2. Save monitor. Your deployment will now respond with instant zero-second load times 24/7.
 
 ---
 

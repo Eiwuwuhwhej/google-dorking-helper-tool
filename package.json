@@ -2,6 +2,7 @@
   "name": "google-dork-generator",
   "version": "1.2.0",
   "description": "Professional Google Dorking Query Generator & Reverse Dork Parser for OSINT, Bug Bounty reconnaissance, and Google Hacking Database (GHDB) audits.",
+  "homepage": "https://google-dorking-helper-tool.onrender.com",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

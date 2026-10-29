@@ -25,6 +25,26 @@ const server = http.createServer((req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   let pathname = parsedUrl.pathname;
 
+  // Dedicated Health Check Endpoint for UptimeRobot / Render Health Checks
+  if (pathname === '/health' || pathname === '/healthz' || pathname === '/ping') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'X-Content-Type-Options': 'nosniff'
+    });
+    if (req.method === 'HEAD') {
+      res.end();
+      return;
+    }
+    res.end(JSON.stringify({
+      status: 'ok',
+      service: 'google-dork-generator',
+      uptime: Math.floor(process.uptime()),
+      timestamp: new Date().toISOString()
+    }));
+    return;
+  }
+
   if (pathname === '/' || pathname === '') {
     pathname = '/index.html';
   }
@@ -52,6 +72,10 @@ const server = http.createServer((req, res) => {
           'X-Content-Type-Options': 'nosniff',
           'X-Frame-Options': 'SAMEORIGIN'
         });
+        if (req.method === 'HEAD') {
+          res.end();
+          return;
+        }
         res.end(content);
       });
       return;
@@ -72,6 +96,10 @@ const server = http.createServer((req, res) => {
         'X-Content-Type-Options': 'nosniff',
         'X-Frame-Options': 'SAMEORIGIN'
       });
+      if (req.method === 'HEAD') {
+        res.end();
+        return;
+      }
       res.end(content);
     });
   });
