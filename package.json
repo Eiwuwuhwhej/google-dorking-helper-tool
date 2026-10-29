@@ -1,7 +1,7 @@
 {
   "name": "google-dork-generator",
   "version": "1.2.0",
-  "description": "Personal Google Dorking Query Generator configured for Render",
+  "description": "Professional Google Dorking Query Generator & Reverse Dork Parser for OSINT, Bug Bounty reconnaissance, and Google Hacking Database (GHDB) audits.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -10,9 +10,20 @@
   },
   "keywords": [
     "google-dorking",
+    "google-dork",
+    "google-dorks",
+    "ghdb",
     "osint",
-    "security",
-    "query-builder"
+    "reconnaissance",
+    "bug-bounty",
+    "bugbounty",
+    "security-tools",
+    "dork-generator",
+    "search-operators",
+    "cybersecurity",
+    "infosec",
+    "penetration-testing",
+    "web-security"
   ],
   "engines": {
     "node": ">=18.0.0"

@@ -2,7 +2,7 @@
  * Google Dorking Query Generator
  * Personal-use web application for constructing valid Google search operator queries.
  */
-
+  
 (function () {
   'use strict';
 

@@ -1,100 +1,198 @@
-# Personal Google Dorking Query Generator
+<div align="center">
 
-A responsive, client-side web application designed to construct and deconstruct precise, valid Google search operator queries for security research, OSINT audits, and document discovery.
+# 🔍 Google Dorking Query Generator & Reverse Dork Parser
+### Professional OSINT Reconnaissance, Bug Bounty Asset Discovery & Advanced Search Operator Builder
 
-Runs 100% in the web browser with **zero external dependencies, no backend, no APIs, and no telemetry**. Designed with the **Geist / Swiss Industrial Minimalist** design system.
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com)
+[![Platform: Web / Browser](https://img.shields.io/badge/Platform-Web%20%7C%20Browser-black.svg)]()
+[![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-success.svg)]()
+[![Theme: Geist / Swiss Dark](https://img.shields.io/badge/Design-Geist%20%2F%20Swiss-000000.svg)]()
+
+<p align="center">
+  <strong>Construct, optimize, and deconstruct complex Google Search dorking queries in real time.</strong><br>
+  Built for Bug Bounty Hunters, Penetration Testers, OSINT Researchers, and Security Engineers.<br>
+  <em>100% Client-Side • Zero Tracking • Zero API Keys • Instant Render Deployment</em>
+</p>
+
+[Live Demo](#how-to-run) • [Features](#key-features) • [Deploy to Render](#deploy-to-render-rendercom) • [Dork Cheatsheet](#google-dorking-operators-quick-reference) • [Use Cases](#who-is-this-for)
 
 ---
 
-## Key Features
+</div>
+
+## 📌 Overview
+
+**Google Dorking** (also known as **Google Hacking**) uses specialized Google search operators to uncover security misconfigurations, publicly exposed credentials, open server indexes, leaked database dumps, and sensitive document caches.
+
+The **Google Dorking Query Generator & Reverse Dork Parser** is a fast, privacy-focused developer utility designed with the **Geist / Swiss Industrial Minimalist** design system. Unlike typical online tools, it provides **two-way query synchronization**: construct precision queries using interactive filters and chips, or paste any raw dork from the **Google Hacking Database (GHDB)** to instantly deconstruct it into editable parameters.
+
+---
+
+## 📑 Table of Contents
+
+- [Key Features](#-key-features)
+  - [1. Reverse Query Parser (Deconstruct Raw Dorks)](#1-reverse-query-parser-deconstruct-raw-dork)
+  - [2. Interactive Query Builder](#2-interactive-query-builder)
+  - [3. Live Terminal Output & Syntax Synchronization](#3-live-terminal-output--syntax-synchronization)
+  - [4. Curated Security Audit Templates](#4-curated-security-audit-templates)
+  - [5. Bulk Dork Variations Generator](#5-bulk-dork-variations-generator)
+- [Why Choose This Tool?](#-why-choose-this-tool-vs-alternatives)
+- [Who Is This For?](#-who-is-this-for)
+- [Google Dorking Operators Quick Reference](#-google-dorking-operators-quick-reference)
+- [Popular Dork Patterns Included](#-popular-dork-patterns-included)
+- [Deploy to Render (render.com)](#-deploy-to-render-rendercom)
+- [Local Installation & Development](#-local-installation--development)
+- [Recommended GitHub Repository Topics](#-recommended-github-repository-topics)
+- [Ethics, Scope & Responsible Disclosure](#-ethics-scope--responsible-disclosure)
+- [License](#-license)
+
+---
+
+## ⚡ Key Features
 
 ### 1. Reverse Query Parser ("Deconstruct Raw Dork")
-* **Two-Way Synchronization**: Paste any pre-existing raw Google Dork (from Google Hacking Database / Exploit-DB, GitHub, or bug bounty writeups), and the parser extracts operators back into individual interactive builder fields.
-* **Auto-Extracts**:
-  * Target domain & subdomains (`site:`)
-  * Grouped file extensions `(filetype:... OR filetype:...)` mapped to active UI chips + custom extensions
-  * URL path rules (`inurl:`, `allinurl:`, and grouped `OR` paths)
-  * Title parameters (`intitle:`, `allintitle:`)
-  * Body copy strings (`intext:`, `allintext:`)
-  * Standalone exact phrases (`"..."`)
-  * Exclusions (`-keyword` and `-"quoted phrase"`)
-  * Disjunctions (`OR`)
-  * Date boundaries (`after:YYYY-MM-DD`, `before:YYYY-MM-DD`)
-* **Trigger Methods**:
-  * Click **"Deconstruct to Form"** in the live buffer header.
-  * Click **"Paste & Deconstruct"** in the action toolbar to import directly from clipboard or prompt.
-  * Direct paste listener detects dork strings pasted into the buffer and offers 1-click unpacking.
+* **Two-Way Synchronization**: Found a query on Exploit-DB, GHDB, or Twitter? Paste any raw Google dork string, and the intelligent parsing engine immediately maps operators into their respective input fields and interactive chips.
+* **Intelligent Operator Unpacking**:
+  * Extracts target domain & subdomains from `site:` and parenthetical groups.
+  * Maps grouped extensions `(filetype:pdf OR filetype:docx)` directly to active UI toggle chips.
+  * Separates URL path parameters (`inurl:`, `allinurl:`), page titles (`intitle:`, `allintitle:`), and body copy (`intext:`, `allintext:`).
+  * Distinguishes exact phrase matches (`"..."`) from operator arguments.
+  * Isolates negative exclusions (`-term` and `-"quoted phrase"`).
+  * Automatically handles date constraints (`after:YYYY-MM-DD`, `before:YYYY-MM-DD`).
 
 ### 2. Interactive Query Builder
-* **Target Scope**: Filter by domain, subdomains, or top-level domains (`site:`). Automatically sanitizes URLs and trims protocols (`https://`) while preserving specific directory paths.
-* **Search Term Modifiers**:
-  * Keywords / Search terms (standard all-words search).
-  * Exact phrase matching (`"..."`) with automatic quotation wrapping.
-  * Logical combinations with capitalized `OR` (e.g. `(secret OR token OR key)`).
-  * Exclusions (`-keyword` and `-"phrase with spaces"`).
-* **Advanced Operators**:
-  * Multi-select file extension chips (`pdf`, `docx`, `xlsx`, `sql`, `env`, `log`, etc.) combined logically with `OR`.
-  * Custom filetype input.
-  * Title search (`intitle:` and `allintitle:`).
-  * URL search (`inurl:` and `allinurl:`).
-  * Body text search (`intext:` and `allintext:`).
-  * Time range filters (`after:YYYY-MM-DD` and `before:YYYY-MM-DD`).
+* **Domain & Scope Filter (`site:`)**: Restricts searches to a target domain, top-level domain (`.gov`, `.edu`), or specific URI path. Automatically trims `http/https` protocols and trailing slashes.
+* **Tactile Filetype Selector**: Clickable hardware-style toggle chips for common sensitive file types (`pdf`, `docx`, `xlsx`, `csv`, `sql`, `env`, `log`, `conf`, `json`, `xml`, `bak`, `txt`), plus a custom extension field for `yaml`, `ini`, `pem`, `key`, and `db`.
+* **Logic Operators**: Combines terms with capitalized `OR`, quotes multi-word phrases automatically, and formats hyphenated exclusions (`-word`).
+* **Time Range Boundaries**: Restrict discoveries to documents indexed before or after specific calendar dates.
 
-### 3. Live Editable Terminal Buffer & Synchronization
-* Real-time query assembly as you adjust fields and chips.
-* Editable preview textarea: modify query strings directly without losing sync.
-* "MODIFIED" status badge appears on manual edits, with a 1-click **Sync Builder** button to re-sync with form inputs.
-* Character counter and term counter with Google term truncation threshold warning (>32 terms).
+### 3. Live Terminal Output & Syntax Synchronization
+* **Developer Terminal Buffer**: High-contrast, monospaced live preview formatted like an IDE/CLI buffer.
+* **Bidirectional State**: Edit query strings directly in the textarea without breaking form synchronization.
+* **Google Truncation Warning**: Real-time character and term counter with visual alerts when exceeding Google’s ~32-word query threshold.
+* **1-Click Quick Actions**: Instant clipboard copy with toast feedback, direct tab launch on Google, and local bookmark saving.
 
-### 4. Quick Actions
-* **Copy Query**: Instant clipboard copy with visual toast notifications and fallback for older environments.
-* **Open in Google**: Safely URL-encodes queries and opens search results in a new tab with `noopener,noreferrer`.
-* **Save Bookmarks**: Save favorite dork queries to browser local storage.
-* **Clear All**: Reset all builder inputs and query states in one click.
+### 4. Curated Security Audit Templates
+Pre-configured with industry-standard search archetypes for rapid reconnaissance:
+* **Directory Listings & Open Indexes**: `site:{domain} intitle:"index of /" "parent directory"`
+* **Exposed Environment & Config Files**: `site:{domain} (filetype:env OR filetype:yaml OR filetype:conf) "DB_PASSWORD"`
+* **Database Backups & SQL Dumps**: `site:{domain} (filetype:sql OR filetype:bak OR filetype:dump OR filetype:db)`
+* **Sensitive & Confidential Documents**: `site:{domain} (filetype:pdf OR filetype:docx) "confidential" OR "internal only"`
+* **Admin Portals & Management Logins**: `site:{domain} (inurl:admin OR inurl:login OR inurl:portal OR inurl:dashboard)`
+* **Public Server Logs & Error Traces**: `site:{domain} (filetype:log OR filetype:txt) intext:"error" OR intext:"stack trace"`
+* **Exposed VCS Repositories**: `site:{domain} inurl:".git" OR inurl:".svn" -github.com -gitlab.com`
+* **Subdomain Enumeration**: `site:*.{domain} -www.{domain}`
+* **Cloud Storage Exposure**: `site:s3.amazonaws.com OR site:blob.core.windows.net "{domain}"`
+* **Pastebin & Code Snippet Leaks**: `site:pastebin.com OR site:gist.github.com "{domain}"`
+* *Global Variable Replacement*: Enter your target domain once to recompute all templates instantaneously.
 
-### 5. Predefined Dorking Templates
-* Built-in library of structured security and research dorks:
-  * Directory Listings & Open Indexes (`intitle:"index of /"`)
-  * Exposed Environment & Config Files (`filetype:env`, `filetype:yaml`, etc.)
-  * Database Backups & SQL Dumps (`filetype:sql`, `filetype:bak`, etc.)
-  * Sensitive & Confidential Documents
-  * Admin & Authentication Portals
-  * Public Server Logs & Error Traces
-  * Exposed Version Control Repositories (`.git`, `.svn`)
-  * Subdomain & Asset Discovery
-  * Cloud Storage Buckets (AWS S3, Azure Blob)
-  * Public Code Snippets & Pastes (Pastebin, GitHub Gist)
-  * API Specifications & Swagger UI
-  * Academic & Research Papers
-* Global domain variable replacement: enter a target domain once and all templates update instantaneously.
-* 1-click "Load in Builder" to customize any template.
-
-### 6. Bulk Variation Generator
-* Generate a batch of queries across multiple variations (file extensions, directory paths, or custom keyword lists).
-* Pre-packaged presets for Auth Portals, Sensitive Files, Database Dumps, Information Disclosures, Document Types, and Cloud Storage.
-* Individual "Copy" and "Open in Google" buttons for each variation.
-* "Copy All" and "Export .TXT" batch export.
-
-### 7. Search Operators Cheat Sheet
-* Complete quick-reference table for standard Google search operators, examples, and syntax guidelines (e.g. no spaces after colons).
+### 5. Bulk Dork Variations Generator
+* Generate large multi-query variation matrices from keyword lists, URL directories, or file extensions.
+* Built-in security presets: **Auth Endpoints**, **Sensitive Files**, **Database Dumps**, **Information Disclosures**, **Document Types**, and **Cloud Buckets**.
+* Batch actions: Individual copy/launch buttons, **Copy All**, and **Export .TXT** for downstream tools (e.g. bash scripts, recon pipelines).
 
 ---
 
-## Scope & Safety Notice
+## 🏆 Why Choose This Tool vs Alternatives?
 
-This application strictly operates as an input-to-query string formatter and launcher. 
-* It does **not** execute automated background searches or web scraping.
-* It does **not** scan websites or exploit vulnerabilities.
-* All Google searches are opened manually by the user in their own web browser.
+| Feature | This Tool (`dorkgen`) | Traditional Dork Lists | Automated Scraper Bots |
+| :--- | :---: | :---: | :---: |
+| **Reverse Dork Parsing** | ✅ Yes (Deconstruct raw dorks) | ❌ No | ❌ No |
+| **Zero CAPTCHA Triggering** | ✅ Yes (Manual user launch) | ⚠️ Manual | ❌ Triggers IP bans/CAPTCHAs |
+| **Privacy & Data Security** | ✅ 100% In-Browser (Zero Logs) | ⚠️ Variable | ❌ Third-party servers |
+| **Custom Bulk Matrix Generator** | ✅ Built-in with .TXT export | ❌ No | ⚠️ Requires code setup |
+| **Aesthetic & UX** | ✅ Geist / Swiss Minimalist | ❌ Plain text / Ad-heavy | ❌ Terminal only |
+| **Setup Complexity** | ✅ Zero build / 1-click Render | ⚠️ Manual copy-paste | ❌ Heavy Python/API setup |
 
 ---
 
-## How to Run
+## 🎯 Who Is This For?
 
-No build step, package manager, or server setup is required.
+* 🛡️ **Bug Bounty Hunters**: Accelerate target reconnaissance and discover low-hanging vulnerabilities (exposed `.env`, unlinked admin panels, API keys).
+* 🕵️ **OSINT Investigators & Journalists**: Find unindexed PDF reports, public archives, and leaked mentions on paste sites.
+* 💻 **Penetration Testers & Red Teams**: Map external organizational attack surfaces and exposed assets during Blackbox assessments.
+* 👨‍💻 **DevSecOps & System Administrators**: Audit your own company domains to remediate publicly indexed internal documents and backup dumps.
+* 🎓 **Cybersecurity Students**: Learn Google search operator syntax through an interactive visual builder and cheat sheet.
 
-### Method 1: Direct File Opening
-Double-click `index.html` or open it directly in any modern browser:
+---
+
+## 📖 Google Dorking Operators Quick Reference
+
+| Operator | Syntax | Description | Real-World Example |
+| :--- | :--- | :--- | :--- |
+| `site:` | `site:domain.com` | Restricts results to a specific domain or path | `site:target.com/admin` |
+| `filetype:` | `filetype:extension` | Filters files by extension (`pdf`, `env`, `sql`, `docx`) | `filetype:env "DB_HOST"` |
+| `intitle:` | `intitle:"phrase"` | Matches words strictly inside HTML `<title>` tag | `intitle:"index of /"` |
+| `allintitle:` | `allintitle:word1 word2` | Requires all words to appear in page title | `allintitle:dashboard login` |
+| `inurl:` | `inurl:path` | Searches for specified string inside the URL address | `inurl:wp-content/plugins` |
+| `allinurl:` | `allinurl:part1 part2` | Requires all terms to appear inside the URL | `allinurl:api v1 auth` |
+| `intext:` | `intext:"phrase"` | Searches strictly within the visible page body text | `intext:"BEGIN RSA PRIVATE KEY"` |
+| `" "` | `"exact phrase"` | Enforces exact word order without stemming or synonyms | `"confidential internal use only"` |
+| `-` | `-keyword` | Excludes results matching the negative term | `site:example.com -www` |
+| `OR` | `term1 OR term2` | Logical disjunction (must be uppercase) | `filetype:sql OR filetype:bak` |
+| `after:` | `after:YYYY-MM-DD` | Filters pages indexed on or after this date | `after:2024-01-01` |
+| `before:` | `before:YYYY-MM-DD` | Filters pages indexed on or before this date | `before:2023-12-31` |
+
+> **⚠️ Syntax Tip:** Never insert a space after the colon. `site: example.com` is invalid; `site:example.com` is valid.
+
+---
+
+## 🚀 Popular Dork Patterns Included
+
+```bash
+# 1. Exposed Environment & API Configuration Files
+site:target.com (filetype:env OR filetype:yaml OR filetype:conf) "DB_PASSWORD" OR "API_KEY"
+
+# 2. Open Directory Indexing (Apache / NGINX / IIS)
+site:target.com intitle:"index of /" "parent directory"
+
+# 3. Accidental Database Backups & SQL Dumps
+site:target.com (filetype:sql OR filetype:bak OR filetype:dump OR filetype:tar.gz)
+
+# 4. Hidden Admin & Authentication Portals
+site:target.com (inurl:admin OR inurl:login OR inurl:portal OR inurl:dashboard)
+
+# 5. Sensitive Internal Documents & Audits
+site:target.com (filetype:pdf OR filetype:docx OR filetype:xlsx) "confidential" OR "strictly private"
+
+# 6. Subdomain Asset Discovery
+site:*.target.com -www.target.com
+```
+
+---
+
+## ☁️ Deploy to Render (render.com)
+
+This repository includes native **[render.yaml](render.yaml)** Blueprint and **[server.js](server.js)** configurations.
+
+### Option 1: 1-Click Static Site (100% Free CDN)
+1. Fork or push this repository to GitHub/GitLab.
+2. In the [Render Dashboard](https://dashboard.render.com), click **New +** $\rightarrow$ **Blueprint**.
+3. Select this repo. Render will automatically configure:
+   * **Runtime**: `Static`
+   * **Build Command**: `npm run build`
+   * **Publish Directory**: `.`
+   * **Security Headers**: HSTS, `X-Frame-Options`, `X-Content-Type-Options`.
+4. Click **Apply** to deploy your live instance with automatic SSL.
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+### Option 2: Node.js Web Service
+1. In the Render Dashboard, select **New +** $\rightarrow$ **Web Service**.
+2. Select your repository.
+3. Render automatically detects Node.js (`npm run build` & `npm start`).
+4. The built-in zero-dependency `server.js` binds to Render's dynamic `PORT` on `0.0.0.0`.
+
+---
+
+## 💻 Local Installation & Development
+
+No complex toolchains, bundlers, or package installations are required.
+
+### Quick Run
+Simply open `index.html` in your web browser:
 ```bash
 # Windows
 start index.html
@@ -106,55 +204,45 @@ open index.html
 xdg-open index.html
 ```
 
-### Method 2: Local HTTP Server (Optional)
+### Local Development Server (Optional)
 ```bash
+# Using Node.js
+npm start
+
 # Using Python 3
 python -m http.server 8080
-
-# Using Node.js (npx)
-npx serve .
 ```
-Then navigate to `http://localhost:8080`.
+Navigate to `http://localhost:10000` or `http://localhost:8080`.
+
+### Running Verification Tests
+```bash
+npm test
+```
 
 ---
 
-## Deploying to Render (render.com)
+## 🏷️ Recommended GitHub Repository Topics
 
-This repository is pre-configured for **Render**. You can deploy it using either method:
+When publishing this repository on GitHub, add these topics in your repository settings under **"About"** to maximize GitHub discoverability:
 
-### Option A: Static Site via Render Blueprint (Recommended — 100% Free Tier)
-1. Push this repository to GitHub or GitLab.
-2. In the [Render Dashboard](https://dashboard.render.com), click **New +** $\rightarrow$ **Blueprint**.
-3. Connect your repository. Render will automatically detect the [render.yaml](file:///c:/Users/DELL/Desktop/simple%20query%20generator/render.yaml) file and configure:
-   * **Runtime**: `Static`
-   * **Build Command**: `npm run build`
-   * **Publish Directory**: `.`
-   * **Security Headers**: `X-Frame-Options`, `X-Content-Type-Options`, and `Referrer-Policy`.
-4. Click **Apply**. Your app is immediately live on Render's global CDN with automated HTTPS.
-
-### Option B: Node.js Web Service
-If you prefer deploying as a web service rather than a static site:
-1. In the Render Dashboard, click **New +** $\rightarrow$ **Web Service**.
-2. Connect your repository.
-3. Configure settings:
-   * **Environment**: `Node`
-   * **Build Command**: `npm run build`
-   * **Start Command**: `npm start`
-4. Render will assign a `PORT` environment variable, which [server.js](file:///c:/Users/DELL/Desktop/simple%20query%20generator/server.js) automatically binds to `0.0.0.0`.
+```
+google-dorking, google-dorks, ghdb, osint, reconnaissance, bug-bounty, bugbounty, security-tools, dork-generator, search-operators, cybersecurity, infosec, ethical-hacking, recon-tools, web-security
+```
 
 ---
 
-## File Structure
+## ⚖️ Ethics, Scope & Responsible Disclosure
 
-```
-simple query generator/
-├── index.html       # Single-page layout, controls, and preview elements
-├── style.css        # Geist / Swiss Industrial minimalist dark design system
-├── app.js           # Core state, forward/reverse parsers, and actions
-├── server.js        # Zero-dependency Node.js HTTP server for Render Web Service
-├── render.yaml      # Native Render Blueprint specification
-├── package.json     # Node script definitions (build, start, test)
-├── .gitignore       # Git exclusions
-├── test-app.js      # Comprehensive automated unit tests (parser & DOM)
-└── README.md        # Documentation and deployment guide
-```
+* **Defensive Utility**: This project is developed strictly for authorized security assessments, OSINT research, defensive auditing, and academic learning.
+* **No Automated Scraping**: This tool does not make automated HTTP requests to Google, does not bypass CAPTCHAs, does not scrape search results, and does not exploit vulnerabilities.
+* **Manual User Actions**: All search operations are manually executed by the user in their own web browser. Always obtain written authorization before conducting security testing on third-party targets.
+
+---
+
+## 📄 License
+
+Distributed under the **MIT License**. See `LICENSE` for details. Free for personal, commercial, and educational use.
+
+<div align="center">
+  <sub>Engineered with precision for cybersecurity professionals and researchers.</sub>
+</div>
