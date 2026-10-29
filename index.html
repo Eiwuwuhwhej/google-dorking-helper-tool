@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Dorking Query Generator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Top Bar / Header -->
+    <header class="app-header">
+      <div class="header-container">
+        <div class="header-left">
+          <div class="brand-badge">
+            <span class="brand-symbol">/</span>
+            <span class="brand-name">dorkgen</span>
+            <span class="brand-version">v1.2</span>
+          </div>
+          <div class="header-divider"></div>
+          <span class="header-subtitle">Search Operator Constructor</span>
+        </div>
+
+        <nav class="nav-tabs" role="tablist">
+          <button class="nav-tab active" data-tab="builder" role="tab" aria-selected="true">
+            Query Builder
+          </button>
+          <button class="nav-tab" data-tab="templates" role="tab" aria-selected="false">
+            Templates
+          </button>
+          <button class="nav-tab" data-tab="bulk" role="tab" aria-selected="false">
+            Bulk Generator
+          </button>
+          <button class="nav-tab" data-tab="cheatsheet" role="tab" aria-selected="false">
+            Syntax Reference
+          </button>
+          <button class="nav-tab" data-tab="history" role="tab" aria-selected="false">
+            Saved (<span id="savedCount">0</span>)
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <div class="main-container">
+
+        <!-- Global Output / Live Terminal Preview Card -->
+        <section class="preview-card" aria-label="Generated Query Terminal">
+          <div class="preview-header">
+            <div class="preview-meta-left">
+              <span class="status-pip"></span>
+              <span class="terminal-tag">LIVE BUFFER</span>
+              <span id="editBadge" class="status-badge" style="display: none;">MODIFIED</span>
+              <button id="btnDeconstruct" class="btn btn-xs btn-outline" title="Deconstruct raw query into builder form fields">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                Deconstruct to Form
+              </button>
+              <button id="btnResync" class="btn btn-xs btn-outline" style="display: none;" title="Re-sync query from builder inputs">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Sync Builder
+              </button>
+            </div>
+            <div class="preview-meta-right">
+              <span id="charCount">0 chars</span>
+              <span class="stat-separator">/</span>
+              <span id="wordCount">0 terms</span>
+            </div>
+          </div>
+
+          <div class="preview-body">
+            <div class="query-input-wrapper">
+              <span class="terminal-prefix-char">&gt;</span>
+              <textarea 
+                id="generatedQuery" 
+                rows="2" 
+                placeholder="Google dork query will compile here as you configure parameters..." 
+                spellcheck="false"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="preview-actions">
+            <div class="actions-group-left">
+              <button id="btnCopy" class="btn btn-primary" title="Copy query to clipboard">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Query
+              </button>
+              <button id="btnGoogle" class="btn btn-secondary" title="Execute search on Google in new tab">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Open in Google
+              </button>
+              <button id="btnPasteDork" class="btn btn-ghost" title="Paste any raw dork string to deconstruct into builder">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                Paste &amp; Deconstruct
+              </button>
+              <button id="btnSaveQuery" class="btn btn-ghost" title="Save query to local bookmarks">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Save
+              </button>
+            </div>
+            <div class="actions-group-right">
+              <button id="btnResetBuilder" class="btn btn-ghost" title="Reset all input fields">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Clear All
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 1: Query Builder -->
+        <section id="tab-builder" class="tab-pane active" role="tabpanel">
+          <form id="builderForm" onsubmit="event.preventDefault();">
+            <div class="grid-2-cols">
+
+              <!-- Left Panel: Scope & Keywords -->
+              <div class="panel">
+                <div class="panel-header">
+                  <h4 class="panel-title">Target Scope &amp; Keywords</h4>
+                </div>
+                <div class="panel-body form-stack">
+                  <!-- Domain / Site -->
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label for="inputSite">Target Domain / Scope</label>
+                      <span class="operator-tag">site:</span>
+                    </div>
+                    <div class="input-with-prefix">
+                      <span class="input-prefix">site:</span>
+                      <input type="text" id="inputSite" placeholder="example.com, *.gov, or domain.com/path" autocomplete="off" />
+                    </div>
+                    <span class="field-hint">Domain or path filter. Automatically cleans http/https protocols.</span>
+                  </div>
+
+                  <!-- Standard Keywords -->
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label for="inputKeywords">Search Terms</label>
+                      <span class="operator-tag">terms</span>
+                    </div>
+                    <input type="text" id="inputKeywords" placeholder="confidential internal audit report" autocomplete="off" />
+                    <span class="field-hint">General search words (Google matches all terms).</span>
+                  </div>
+
+                  <!-- Exact Phrase -->
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label for="inputExactPhrase">Exact Phrase</label>
+                      <span class="operator-tag">&quot;...&quot;</span>
+                    </div>
+                    <input type="text" id="inputExactPhrase" placeholder="index of / or strictly confidential" autocomplete="off" />
+                    <span class="field-hint">Forces an exact character-sequence match in quotes.</span>
+                  </div>
+
+                  <!-- Logical OR Combinations -->
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label for="inputOrKeywords">Any of these words</label>
+                      <span class="operator-tag">OR</span>
+                    </div>
+                    <input type="text" id="inputOrKeywords" placeholder="password, secret, token, credentials" autocomplete="off" />
+                    <span class="field-hint">Comma-separated or uppercase OR combinations.</span>
+                  </div>
+
+                  <!-- Exclusions -->
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label for="inputExclude">Exclusions</label>
+                      <span class="operator-tag">-word</span>
+                    </div>
+                    <input type="text" id="inputExclude" placeholder="sample, test, -github.com, &quot;sample report&quot;" autocomplete="off" />
+                    <span class="field-hint">Negative matches prepended with a hyphen. Quoted phrases supported.</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Panel: Operators & Modifiers -->
+              <div class="panel">
+                <div class="panel-header">
+                  <h4 class="panel-title">Operators &amp; Filters</h4>
+                </div>
+                <div class="panel-body form-stack">
+
+                  <!-- File Types -->
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label>File Extensions</label>
+                      <span class="operator-tag">filetype:</span>
+                    </div>
+                    <!-- Quick selection chips -->
+                    <div class="chip-container" id="filetypeChips">
+                      <button type="button" class="chip" data-ext="pdf">pdf</button>
+                      <button type="button" class="chip" data-ext="docx">docx</button>
+                      <button type="button" class="chip" data-ext="xlsx">xlsx</button>
+                      <button type="button" class="chip" data-ext="csv">csv</button>
+                      <button type="button" class="chip" data-ext="sql">sql</button>
+                      <button type="button" class="chip" data-ext="env">env</button>
+                      <button type="button" class="chip" data-ext="log">log</button>
+                      <button type="button" class="chip" data-ext="conf">conf</button>
+                      <button type="button" class="chip" data-ext="json">json</button>
+                      <button type="button" class="chip" data-ext="xml">xml</button>
+                      <button type="button" class="chip" data-ext="bak">bak</button>
+                      <button type="button" class="chip" data-ext="txt">txt</button>
+                    </div>
+                    <div class="custom-filetype-row">
+                      <input type="text" id="customFiletype" placeholder="Custom ext (e.g. yml, pem, key, db)" autocomplete="off" />
+                      <button type="button" id="btnClearChips" class="btn btn-xs btn-outline">Clear</button>
+                    </div>
+                    <span class="field-hint">Multiple selections will be grouped automatically as <code>(filetype:... OR filetype:...)</code>.</span>
+                  </div>
+
+                  <!-- In URL -->
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label for="inputInUrl">In URL</label>
+                      <span class="operator-tag">inurl:</span>
+                    </div>
+                    <div class="input-with-select">
+                      <select id="selectInUrlMode">
+                        <option value="inurl">inurl:</option>
+                        <option value="allinurl">allinurl:</option>
+                      </select>
+                      <input type="text" id="inputInUrl" placeholder="admin, wp-content, .php?id=" autocomplete="off" />
+                    </div>
+                    <span class="field-hint">Matches strings residing within the URL structure.</span>
+                  </div>
+
+                  <!-- In Title -->
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label for="inputInTitle">In Title</label>
+                      <span class="operator-tag">intitle:</span>
+                    </div>
+                    <div class="input-with-select">
+                      <select id="selectInTitleMode">
+                        <option value="intitle">intitle:</option>
+                        <option value="allintitle">allintitle:</option>
+                      </select>
+                      <input type="text" id="inputInTitle" placeholder="index of / or Dashboard Login" autocomplete="off" />
+                    </div>
+                    <span class="field-hint">Matches text residing strictly within the HTML title element.</span>
+                  </div>
+
+                  <!-- In Text -->
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label for="inputInText">In Body Text</label>
+                      <span class="operator-tag">intext:</span>
+                    </div>
+                    <div class="input-with-select">
+                      <select id="selectInTextMode">
+                        <option value="intext">intext:</option>
+                        <option value="allintext">allintext:</option>
+                      </select>
+                      <input type="text" id="inputInText" placeholder="DB_PASSWORD, API_KEY, internal only" autocomplete="off" />
+                    </div>
+                    <span class="field-hint">Restricts match to the document body copy.</span>
+                  </div>
+
+                  <!-- Date Range (after: and before:) -->
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label>Date Boundaries</label>
+                      <span class="operator-tag">date:</span>
+                    </div>
+                    <div class="date-grid">
+                      <div class="date-field">
+                        <span class="date-prefix">after:</span>
+                        <input type="date" id="inputAfterDate" />
+                      </div>
+                      <div class="date-field">
+                        <span class="date-prefix">before:</span>
+                        <input type="date" id="inputBeforeDate" />
+                      </div>
+                    </div>
+                    <span class="field-hint">Restrict results indexed before or after specified date (YYYY-MM-DD).</span>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </form>
+        </section>
+
+        <!-- TAB 2: Query Templates -->
+        <section id="tab-templates" class="tab-pane" role="tabpanel">
+          <div class="panel">
+            <div class="panel-header template-bar">
+              <div>
+                <h4 class="panel-title">Predefined Dorking Templates</h4>
+                <p class="panel-desc">Curated query archetypes for reconnaissance and security assessment.</p>
+              </div>
+              <div class="template-filter-wrapper">
+                <input type="text" id="templateFilter" placeholder="Filter templates (e.g. env, sql, admin)..." />
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <div class="template-target-box">
+                <label for="templateTargetDomain">Global Target Domain:</label>
+                <div class="input-inline">
+                  <input type="text" id="templateTargetDomain" placeholder="example.com" />
+                  <button type="button" id="btnApplyDomainToTemplates" class="btn btn-secondary btn-sm">Update All</button>
+                </div>
+              </div>
+
+              <div class="templates-grid" id="templatesGrid">
+                <!-- Template cards dynamically rendered by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 3: Bulk Generator -->
+        <section id="tab-bulk" class="tab-pane" role="tabpanel">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h4 class="panel-title">Bulk Variations Generator</h4>
+                <p class="panel-desc">Generate query arrays across filetypes, directories, or custom lists.</p>
+              </div>
+            </div>
+            <div class="panel-body form-stack">
+              <div class="grid-2-cols">
+                <!-- Left: Bulk Configuration -->
+                <div class="form-stack">
+                  <div class="form-group">
+                    <label for="bulkDomain">Target Domain (<code>site:</code>)</label>
+                    <input type="text" id="bulkDomain" placeholder="e.g. example.com" />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="bulkPreset">Select Pattern Preset</label>
+                    <select id="bulkPreset">
+                      <option value="custom">-- Custom Items (enter below) --</option>
+                      <option value="auth">Admin &amp; Authentication Portals (inurl)</option>
+                      <option value="sensitive_files">Sensitive Config &amp; Secret Files (filetype)</option>
+                      <option value="database">Database Backups &amp; Dumps (filetype)</option>
+                      <option value="info_disclosure">Information &amp; Error Disclosures (intitle/intext)</option>
+                      <option value="doc_types">Common Document Formats (pdf, docx, xlsx)</option>
+                      <option value="cloud_storage">Cloud Storage Providers (site)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="bulkOperator">Operator to Apply to Each Item</label>
+                    <select id="bulkOperator">
+                      <option value="filetype:">filetype: (Search by file extension)</option>
+                      <option value="inurl:">inurl: (Search path in URL)</option>
+                      <option value="intitle:">intitle: (Search inside title)</option>
+                      <option value="intext:">intext: (Search inside page body)</option>
+                      <option value="exact">&quot;...&quot; (Exact keyword phrase)</option>
+                      <option value="none">None (Append verbatim item)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="bulkAdditional">Appended Search Terms (all queries)</label>
+                    <input type="text" id="bulkAdditional" placeholder='e.g. &quot;confidential&quot; OR &quot;internal&quot;' />
+                  </div>
+                </div>
+
+                <!-- Right: Pattern Items List -->
+                <div class="form-stack">
+                  <div class="form-group">
+                    <div class="label-row">
+                      <label for="bulkItems">Item Variations (One per line)</label>
+                      <span id="bulkItemCount" class="field-hint">0 items</span>
+                    </div>
+                    <textarea id="bulkItems" rows="8" placeholder="Enter keywords, filetypes, or paths (one per line):&#10;pdf&#10;xlsx&#10;env&#10;sql"></textarea>
+                  </div>
+
+                  <div class="bulk-actions">
+                    <button type="button" id="btnGenerateBulk" class="btn btn-primary">
+                      Generate Variations
+                    </button>
+                    <button type="button" id="btnClearBulk" class="btn btn-ghost">Clear</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bulk Output Section -->
+              <div class="bulk-results-section" id="bulkResultsSection" style="display: none;">
+                <div class="results-header">
+                  <div class="results-count">
+                    <span>Generated Queries:</span> <strong id="bulkTotalCount">0</strong>
+                  </div>
+                  <div class="results-actions">
+                    <button type="button" id="btnCopyAllBulk" class="btn btn-xs btn-outline">
+                      Copy All
+                    </button>
+                    <button type="button" id="btnExportBulkTxt" class="btn btn-xs btn-outline">
+                      Export .TXT
+                    </button>
+                  </div>
+                </div>
+
+                <div class="bulk-list" id="bulkList">
+                  <!-- Generated queries populated by JS -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4: Cheat Sheet & Reference -->
+        <section id="tab-cheatsheet" class="tab-pane" role="tabpanel">
+          <div class="panel">
+            <div class="panel-header">
+              <h4 class="panel-title">Google Search Operators Quick Reference</h4>
+              <p class="panel-desc">Essential syntax standards and behavioral rules.</p>
+            </div>
+            <div class="panel-body">
+              <div class="table-responsive">
+                <table class="reference-table">
+                  <thead>
+                    <tr>
+                      <th>Operator</th>
+                      <th>Syntax</th>
+                      <th>Behavior</th>
+                      <th>Example</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code class="mono-badge">site:</code></td>
+                      <td><code>site:domain.com</code></td>
+                      <td>Restricts search results to the designated domain or path.</td>
+                      <td><code>site:nasa.gov</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">filetype:</code></td>
+                      <td><code>filetype:ext</code></td>
+                      <td>Restricts document format by extension. Synonymous with <code>ext:</code>.</td>
+                      <td><code>filetype:pdf &quot;financial report&quot;</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">intitle:</code></td>
+                      <td><code>intitle:&quot;phrase&quot;</code></td>
+                      <td>Requires specified terms within the page HTML <code>&lt;title&gt;</code>.</td>
+                      <td><code>intitle:&quot;index of /&quot;</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">allintitle:</code></td>
+                      <td><code>allintitle:a b c</code></td>
+                      <td>Requires all specified words to appear within page title.</td>
+                      <td><code>allintitle:admin dashboard login</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">inurl:</code></td>
+                      <td><code>inurl:path</code></td>
+                      <td>Restricts search to text in the URL path.</td>
+                      <td><code>inurl:wp-admin</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">allinurl:</code></td>
+                      <td><code>allinurl:a b c</code></td>
+                      <td>Requires all words to appear in the URL address.</td>
+                      <td><code>allinurl:api v1 auth</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">intext:</code></td>
+                      <td><code>intext:&quot;phrase&quot;</code></td>
+                      <td>Restricts match to the visible body copy of the document.</td>
+                      <td><code>intext:&quot;DB_PASSWORD&quot;</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">&quot; &quot;</code></td>
+                      <td><code>&quot;exact phrase&quot;</code></td>
+                      <td>Requires exact word order without stemming or synonyms.</td>
+                      <td><code>&quot;confidential disclosure&quot;</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">-</code></td>
+                      <td><code>-term</code></td>
+                      <td>Excludes documents matching the negative term.</td>
+                      <td><code>site:example.com -www</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">OR / |</code></td>
+                      <td><code>a OR b</code></td>
+                      <td>Logical disjunction. <code>OR</code> must be capitalized.</td>
+                      <td><code>filetype:pdf OR filetype:doc</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">after:</code></td>
+                      <td><code>after:YYYY-MM-DD</code></td>
+                      <td>Filters documents indexed on or after this date.</td>
+                      <td><code>after:2024-01-01</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">before:</code></td>
+                      <td><code>before:YYYY-MM-DD</code></td>
+                      <td>Filters documents indexed on or before this date.</td>
+                      <td><code>before:2023-12-31</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">cache:</code></td>
+                      <td><code>cache:url</code></td>
+                      <td>Fetches Google's cached copy of the page.</td>
+                      <td><code>cache:example.com</code></td>
+                    </tr>
+                    <tr>
+                      <td><code class="mono-badge">related:</code></td>
+                      <td><code>related:url</code></td>
+                      <td>Discovers sites structurally similar to the target URL.</td>
+                      <td><code>related:github.com</code></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="note-box">
+                <strong>Syntax Rule:</strong> Do not insert whitespace after the operator colon. <code>site: example.com</code> is invalid; <code>site:example.com</code> is valid.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 5: Saved History -->
+        <section id="tab-history" class="tab-pane" role="tabpanel">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h4 class="panel-title">Saved Bookmarks</h4>
+                <p class="panel-desc">Locally cached query queries stored in browser localStorage.</p>
+              </div>
+              <div class="history-header-actions">
+                <button type="button" id="btnClearHistory" class="btn btn-xs btn-outline">Clear All</button>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div id="savedEmptyState" class="empty-state">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <p>No queries saved. Click "Save" on the query preview to bookmark.</p>
+              </div>
+              <div id="savedQueriesList" class="saved-list"></div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-container">
+        <p>
+          Client-side query constructor. No automated network crawling or server-side requests performed.
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "google-dork-generator",
+  "version": "1.2.0",
+  "description": "Personal Google Dorking Query Generator configured for Render",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node test-app.js",
+    "test": "node test-app.js"
+  },
+  "keywords": [
+    "google-dorking",
+    "osint",
+    "security",
+    "query-builder"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
+
